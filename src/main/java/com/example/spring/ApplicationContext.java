@@ -4,9 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -17,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ApplicationContext {
 
@@ -32,7 +29,7 @@ public class ApplicationContext {
     }
 
     public void initContext(String packageName) throws Exception {
-        scanPackage(packageName).stream().filter(this::scanCreate).forEach(this::wrapper);
+        scanPackage(packageName).stream().filter(this::canCreate).forEach(this::wrapper);
         initBeanPostProcessor();
         beanDefinitionMap.values().forEach(this::createBean);
     }
@@ -45,7 +42,7 @@ public class ApplicationContext {
                 .forEach(beanPostProcessors::add);
     }
 
-    protected boolean scanCreate(Class<?> type) {
+    protected boolean canCreate(Class<?> type) {
         return type.isAnnotationPresent(Component.class);
     }
 
